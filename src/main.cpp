@@ -13,8 +13,8 @@ pros::Motor rightBack(4, pros::E_MOTOR_GEARSET_06, false);
 pros::Motor cataMotor(5, pros::E_MOTOR_GEARSET_36, false);
 pros::Motor cataMotor2(9,pros::E_MOTOR_GEARSET_36,true);
 pros::Motor intakeMotor(6, pros::E_MOTOR_GEARSET_06, true);
-pros::ADIDigitalOut leftPiston(LEFT_DIGITAL_PORT);
-pros::ADIDigitalOut rightPiston(RIGHT_DIGTIAL_PORT);
+pros::ADIDigitalOut leftPiston('B',false);
+pros::ADIDigitalOut rightPiston('A',false);
 pros::Rotation rot(10);
 
 pros::Motor_Group leftDB({leftFront, leftBack});
@@ -73,6 +73,18 @@ void initialize() {
     chassis.setPose(0,0,0); // x pos, y pos, angle/theta
    
 }
+
+void wings() {
+    leftPiston.set_value(true);
+    rightPiston.set_value(true);
+}
+
+void wingStop() {
+    leftPiston.set_value(false);
+    leftPiston.set_value(false);
+}
+
+
 
 // Disabled (Field Management/Comp Switch Disabled)
 // Probably dont put anything in here
