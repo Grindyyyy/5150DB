@@ -4,7 +4,12 @@
 #define RIGHT_DIGTIAL_PORT 'B'
 
 
+bool wingToggle = false;
+bool switchToggle = false;
+bool cataToggle = false;
 
+
+pros::Optical opticalSensor(11);
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Motor leftFront(1, pros::E_MOTOR_GEARSET_06, true);
 pros::Motor leftBack(2, pros::E_MOTOR_GEARSET_06, true);
@@ -43,23 +48,23 @@ lemlib::OdomSensors_t sensors {
 
 // forward/backward PID
 lemlib::ChassisController_t lateralController {
-    10.8, // kP
-    20, // kD
-    1, // smallErrorRange
-    200, // smallErrorTimeout
-    3, // largeErrorRange
-    1100, // largeErrorTimeout
+    15,// kP
+    100, // kD
+    0, // smallErrorRange
+    10000, // smallErrorTimeout
+    0, // largeErrorRange
+    10000, // largeErrorTimeout
     25 // slew rate
 };
  
 // turning PID
 lemlib::ChassisController_t angularController {
-    5.55, // kPenis
-    12, // kDick
+    5, //kPenis
+    15.7, // kDick
     1, // small range
-    300, // small timeout
+    750, // small timeout
     1, // large range
-    1000, // large timeout
+    2000, // large timeout
     25 // slew
 };
 
@@ -69,19 +74,58 @@ lemlib::Chassis chassis(drivetrain, lateralController, angularController, sensor
 // Initialize chassis and calibrate gyro
 void initialize() {
     pros::lcd::initialize();
+    rot.reset();
+    rot.set_reversed(true);
     chassis.calibrate(); // calibrates positioning of the chassis for accurate pid
     chassis.setPose(0,0,0); // x pos, y pos, angle/theta
    
 }
 
 void wings() {
+    if(wingToggle == true){
+        wingToggle = false;
+    }
+    else{
+        wingToggle = true;
+    }
+    if(wingToggle == true){
+        leftPiston.set_value(true);
+        rightPiston.set_value(true);
+    }
+    else{
+        leftPiston.set_value(false);
+        rightPiston.set_value(false);
+    }
+
+
+}
+
+void killSwitch(){
+    if(switchToggle == false){
+        switchToggle = true;
+    }
+    else{
+        switchToggle = false;
+    }
+}
+
+void cataSwitch(){
+    if(cataToggle == false){
+        cataToggle = true;
+    }
+    else{
+        cataToggle = false;
+    }
+}
+
+void autonWing(){
     leftPiston.set_value(true);
     rightPiston.set_value(true);
 }
 
-void wingStop() {
+void autonWingStop(){
     leftPiston.set_value(false);
-    leftPiston.set_value(false);
+    rightPiston.set_value(false);
 }
 
 
@@ -94,51 +138,186 @@ void disabled() {}
 // Use for auton picker if you want
 void competition_initialize() {}
 
+void wait(int msec){
+    pros::delay(msec);
+}
+
 // Autonomous
 void autonomous() {
-    // Intake
-    intakeMotor.move(127);
-    pros::delay(500);
-    // Path 1 gets into position to ram the matchload into the goal
-    chassis.follow("RightEasy1.txt",750,12);
-    // Outtake matchload triball
-    intakeMotor.move(-127);
-    pros::delay(500);
-    intakeMotor.move(0);
-    // This path rams the matchload triball into the goal and sets up to intake the next triball
-    chassis.follow("RightEasy2.txt",750,12);
-    // Intake
-    intakeMotor.move(127);
-    // This path intakes the triball that is not on the line
-    chassis.follow("RightEasy3.txt",500,12);
-    pros::delay(1000);
-    // Stop intake
-    intakeMotor.move(0);
-    // This path sets up to ram the triball into the goal
-    chassis.follow("RightEasy4.txt",500,12);
-    // Outtake
-    intakeMotor.move(-127);
-    pros::delay(500);
-    intakeMotor.move(0);
-    // This path rams the triball into the goal and sets up to pick up the far back triball
-    chassis.follow("RightEasy5.txt",500,20);
-    // Intake
-    intakeMotor.move(127);
-    // This path intakes the far back triball and sets up to ram both triballs inside the goal
-    chassis.follow("RightEasy6.txt",500,5);
-    pros::delay(1000);
-    intakeMotor.move(0);
-    // This path rams the triball closest to the goal into the goal and sets up to outtake the
-    // intaked triball
-    chassis.follow("RightEasy7.txt",750,20);
-    // Outtake
-    intakeMotor.move(-127);
-    pros::delay(500);
-    intakeMotor.move(0);
-    // This path rams the final triball into the goal
-    chassis.follow("RightEasy8.txt",500,20);
+   // Close AWP
+/*
+   chassis.setPose(0,0,45);
+   cataMotor.move(127);
+   cataMotor2.move(127);
+   wait(300);
+   cataMotor2.move(0);
+   cataMotor.move(0);
+   autonWing();
+   wait(100);
+   chassis.turnTo(0,10000,750,false,100);
+   wait(200);
+   autonWingStop();
+   wait(100);
+   chassis.moveTo(6,24,1000,100);
+   wait(100);
+   chassis.turnTo(6,10000,750);
+   wait(300);
+   chassis.setPose(0,0,0);
+   wait(400);
+   chassis.turnTo(0,10000,750);
+   wait(100);
+   chassis.moveTo(0,14,1000,100);
+*/
+    // Skills
+/*
+    chassis.setPose(0,0,145);
+    cataMotor.move(127);
+    cataMotor2.move(127);
+    wait(35000);
+    while(1){
+        if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80){
+        cataMotor.move(0);
+        cataMotor2.move(0);
+        chassis.moveTo(5,10,1500,127);
+        wait(200);
+        chassis.moveTo(3,93,1500,127);
+        wait(200);
+        autonWing();
+        wait(100);
+        chassis.moveTo(-18,105,1000,127);
+    wait(100);
+        autonWingStop(); 
+        chassis.moveTo(-35,110,1000,127);
+        wait(100);
+        chassis.setPose(0,0,0);
+        chassis.moveTo(0,10,600,127);
+        wait(100);
+        chassis.moveTo(0,-10,700,127);
+        wait(100);
+        chassis.moveTo(4,17,600,127);
+        wait(100);
+        chassis.setPose(0,0,0);
+        wait(100);
+        chassis.turnTo(45,0,1000);
+        wait(100);
+        wait(100);
+        chassis.moveTo(35,-10,1000,127);
+        wait(100);
+        chassis.turnTo(50,5,1000);
+        wait(100);
+        autonWing();
+        wait(100);
+        chassis.setPose(0,0,0);
+        chassis.moveTo(0,-50,1300,127);
+        wait(100);
+        chassis.setPose(0,0,0);
+        wait(100);
+        chassis.moveTo(10,25,1200,127);
+        wait(100);
+        chassis.moveTo(10,-5,1200,127);
+        wait(100);
+        chassis.moveTo(10,10,1000,127);
+        wait(100);
+        autonWingStop();
+        chassis.setPose(0,0,0);
+        wait(100);
+        wait(100);
+        chassis.moveTo(0,10,1000,127);
+        wait(100);
+        chassis.turnTo(100,-15,1000);
+        wait(100);
+        chassis.moveTo(50,-20,1500,127);
+        wait(100);
+        chassis.setPose(0,0,0);
+        wait(100);
+        autonWing();
+        wait(100);
+        chassis.moveTo(40,-30,1000,127);
+        wait(100);
+        chassis.setPose(0,0,0);
+        wait(100);
+        chassis.moveTo(0,10,1000,127);
+        wait(100);
+        chassis.moveTo(0,-15,1000,127);
+        wait(100);
+        chassis.setPose(0,0,0);
+        wait(100);
+        chassis.moveTo(0,10,1000,127);
+        wait(100);
+        chassis.moveTo(0,-15,1000,127);
+        autonWingStop();
+        wait(100000);
+    }
+    else{
+        cataMotor.move(127);
+        cataMotor2.move(127);
+    }
+    }
+*/
+// Far 6 Ball
+// Start
+chassis.setPose(8.27,-58.015,270);
+// Lower Intake with Cata
+cataMotor = 127;
+wait(300);
+cataMotor = 0;
+// Intake Bar Triball
+intakeMotor = 127;
+wait(1000);
+intakeMotor = 0;
+// Move to Match Load
+chassis.moveTo(37.689,-57.784,1000,127);
+chassis.moveTo(54.538,-50.794,1000,127);
+// Extend Wings to Dislodge Match Load
+autonWing();
+chassis.moveTo(59.62,-37.956,1000,127);
+autonWingStop();
+// Ram Triballs into Goal using Wedge x2
+chassis.moveTo(59.887,-22.444,800,127);
+chassis.moveTo(59.62,-37.956,1000,127);
+chassis.moveTo(59.887,-22.444,800,127);
+// Set up to grab the next triballs
+chassis.moveTo(45.712,-49.724,1000,127);
+chassis.moveTo(25.386,-22.444,1000,127);
+// Intake the Triball
+intakeMotor = 127;
+chassis.moveTo(11.211,-23.514,2000,80);
+wait(500);
+intakeMotor = 0;
+// Turn to Goal and Outtake Triball
+chassis.turnTo(46.782,-12.816,1000);
+intakeMotor = -127;
+wait(200);
+intakeMotor = 0;
+wait(100);
+// Intake the Line Triball
+intakeMotor = 127;
+chassis.moveTo(21.107,-6.13,2000,80);
+// Turn to Goal & Outtake Triball
+chassis.turnTo(47.05,-6.932,1000);
+intakeMotor = -127;
+wait(300);
+intakeMotor = 0;
+// Intake other Line Triball
+chassis.turnTo(11.479,-1.048,1000);
+intakeMotor = 127;
+chassis.moveTo(11.479,-1.048,1000,127);
+// Outtake into Goal
+chassis.turnTo(47.05,0.824,1000);
+intakeMotor = -127;
+wait(300);
+intakeMotor = 0;
+// Turn to face the other goal (To push with wings)
+chassis.turnTo(-70,-0.781,1000);
+// Open wings and ram the goal twice
+autonWing();
+chassis.moveTo(47.05,0.824,1000,127);
+chassis.moveTo(30,0.824,1000,127);
+chassis.moveTo(47.05,0.824,1000,127);
+// Congrats it might be a 6 ball
 
-    // RIGHT SIDE EASY, 20 POINT AUTON \\
+// -147.959 -94.314
+
 
 }
 
@@ -177,23 +356,51 @@ void opcontrol() {
         // If L2 is being held down, motor = max speed
         // If not, motor = half speed unless rotational sensor angle is between 66 and 68
         // If rot sensor is between values motor stops so its a linear switch.
-        if(rot.get_angle() > 66 && rot.get_angle() < 68){
-            cataMotor.move(0);
-            cataMotor2.move(0);
+        double angle = rot.get_angle();
+        std::printf("%f", angle);
+        if(switchToggle == false){
+            if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80 && !master.get_digital(DIGITAL_L2) && cataToggle != true){
+                cataMotor.move(0);
+                cataMotor2.move(0);  
+            }
+            else if(master.get_digital(DIGITAL_L2)){
+                cataMotor.move(127);
+                cataMotor2.move(127);
+            }
+            else if(cataToggle == true){
+                cataMotor.move(127);
+                cataMotor2.move(127);
+            }
+            else{
+                cataMotor.move(100);
+                cataMotor2.move(100);
+            }
         }
         else if(master.get_digital(DIGITAL_L2)){
-            cataMotor.move(127);
-            cataMotor2.move(127);
-        }
+                cataMotor.move(127);
+                cataMotor2.move(127);
+            }
         else{
-            cataMotor.move(63);
-            cataMotor2.move(63);
+                cataMotor.move(0);
+                cataMotor2.move(0);
+            }
+         
+        if(master.get_digital_new_press(DIGITAL_X)){
+            wings();
         }
+        if(master.get_digital_new_press(DIGITAL_A)){
+            killSwitch();
+        }
+        if(master.get_digital_new_press(DIGITAL_UP)){
+            cataSwitch();
+        }
+
 
         lemlib::Pose pose = chassis.getPose(); // get the current position of the robot
         pros::lcd::print(0, "x: %f", pose.x); // print the x position
         pros::lcd::print(1, "y: %f", pose.y); // print the y position
-        pros::lcd::print(2, "heading: %f", pose.theta); // print the heading
+        pros::lcd::print(2, "cata heading: %i", rot.get_angle() / 100); // print the heading
+        pros::lcd::print(3,"heading: %f", pose.theta);
 
         pros::delay(20);
     }
