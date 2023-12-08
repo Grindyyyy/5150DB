@@ -144,6 +144,8 @@ void wait(int msec){
 
 // Autonomous
 void autonomous() {
+// OLD CODE
+// --------------------------------------------------------------- \\
    // Close AWP
 /*
    chassis.setPose(0,0,45);
@@ -254,7 +256,12 @@ void autonomous() {
     }
     }
 */
-// Far 6 Ball
+// --------------------------------------------------------------- 
+// NEW CODE
+// ---------------------------------------------------------------
+/*
+// 6 BALL RIGHT/FAR AUTON
+// ----------------------
 // Start
 chassis.setPose(8.27,-58.015,270);
 // Lower Intake with Cata
@@ -315,12 +322,93 @@ chassis.moveTo(47.05,0.824,1000,127);
 chassis.moveTo(30,0.824,1000,127);
 chassis.moveTo(47.05,0.824,1000,127);
 // Congrats it might be a 6 ball
-
-// -147.959 -94.314
+*/
+/*
+// LEFT/CLOSE SIDE 2 GOALS 2 PUSH
+// ----------------------
+// Set Position
+chassis.setPose(-34.522,-58.817,90);
+// Open Wing to Dislodge Triball
+autonWing();
+chassis.moveTo(-56.988,-43.84,1000,127);
+autonWingStop();
+// Ram Matchload and Triball into the Goal
+chassis.moveTo(-57.255,-22.979,1000,127);
+// Back Up to Rush Middle
+chassis.moveTo(-56.988,-42.79,1000,127);
+// Go to middle and set up for push
+chassis.moveTo(-20.882,-26.189,1000,127);
+chassis.moveTo(-37.732,-10.677,1000,127);
+// Turn to face the goal & open wings
+chassis.turnTo(-100,10.677,1000);
+autonWing();
+// Push the triballs to the other side of the field
+chassis.moveTo(-8.312,-10.677,1000,127);
+autonWingStop();
+// Move to the matchload bar to set up for immediate matchloading after auton
+chassis.moveTo(-53.779,-49.724,1500,127);
+chassis.turnTo(-147.95, -94.314,1000);
+*/
+/*
+// PROG SKILLS (~150 PT)
+// ----------------------
+chassis.setPose(-44.997,-54.73,240);
+cataMotor.move(127);
+cataMotor2.move(127);
+wait(35000);
+// Linear Switch Statement
+while(1){
+    if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80){
+        // Move under Bar
+        chassis.moveTo(-23.052,-59.639,1000,127);
+        chassis.moveTo(32.389,-60.216,1000,127);
+        // Open wing to dislodge matchload & any triballs that may have been stuck inside
+        autonWing();
+        chassis.moveTo(52.313,-49.243,1000,127);
+        chassis.moveTo(59.243,-40.003,1000,127);
+        autonWingStop();
+        // Ram all triballs into goal twice
+        chassis.moveTo(58.954,-24.122,800,127);
+        chassis.moveTo(59.82,-38.848,1000,127);
+        chassis.moveTo(58.954,-24.122,800,127);
+        // Move to the middle
+        chassis.moveTo(46.782,-48.387,1000,127);
+        chassis.moveTo(17.363,-18.433,1000,127);
+        chassis.moveTo(17.095,-6.665,1000,127);
+        // Line up for ram
+        chassis.turnTo(-62.604,-6.665,1000);
+        autonWing();
+        // Ram once, move up 10 inches and ram again (to get all triballs in)
+        chassis.moveTo(46.782,-6.665,1000,127);
+        chassis.moveTo(16.026,5.905,1000,127);
+        chassis.moveTo(47.317,5.905,1000,127);
+        autonWingStop();
+        // Move to the last side of the net
+        chassis.moveTo(16.828,17.94,1000,127);
+        chassis.moveTo(44.972,57.4,1000,127);
+        // Line up for ramming
+        chassis.turnTo(-5.656,116.927,1000);
+        // Dislodge triballs in matchload area
+        autonWing();
+        chassis.moveTo(55.645,43.917,1000,127);
+        autonWingStop();
+        // Ram 3 times * Change all if your gonna change 1
+        chassis.moveTo(59.577,35.21,1000,127);
+        chassis.moveTo(59.577,22.009,1000,127);
+        chassis.moveTo(59.577,35.21,1000,127);
+        chassis.moveTo(59.577,22.009,1000,127);
+        chassis.moveTo(59.577,35.21,1000,127);
+        chassis.moveTo(59.577,22.009,1000,127);
 
 
 }
-
+    else{
+        cataMotor.move(127);
+        cataMotor2.move(127);
+}
+}
+*/
+}
 void IntakeFull(){
 
 }
@@ -358,6 +446,7 @@ void opcontrol() {
         // If rot sensor is between values motor stops so its a linear switch.
         double angle = rot.get_angle();
         std::printf("%f", angle);
+        
         if(switchToggle == false){
             if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80 && !master.get_digital(DIGITAL_L2) && cataToggle != true){
                 cataMotor.move(0);
@@ -401,6 +490,8 @@ void opcontrol() {
         pros::lcd::print(1, "y: %f", pose.y); // print the y position
         pros::lcd::print(2, "cata heading: %i", rot.get_angle() / 100); // print the heading
         pros::lcd::print(3,"heading: %f", pose.theta);
+        pros::lcd::print(4,"left torque: %f", leftFront.get_torque());
+        pros::lcd::print(5,"right torque: %f",rightFront.get_torque());
 
         pros::delay(20);
     }
