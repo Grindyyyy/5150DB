@@ -13,7 +13,7 @@ pros::Optical opticalSensor(11);
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Motor leftFront(1, pros::E_MOTOR_GEARSET_06, true);
 pros::Motor leftBack(2, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor rightFront(7, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor rightFront(7, pros  ::E_MOTOR_GEARSET_06, false);
 pros::Motor rightBack(4, pros::E_MOTOR_GEARSET_06, false);
 pros::Motor cataMotor(5, pros::E_MOTOR_GEARSET_36, false);
 pros::Motor cataMotor2(9,pros::E_MOTOR_GEARSET_36,true);
