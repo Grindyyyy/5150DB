@@ -41,10 +41,10 @@ pros::Motor intakeMotor(6, pros::E_MOTOR_GEARSET_06, true);
 // We use the digital out ports for VEX pneumatics, and they're lettered
 // rather than numbered to prevent confusion when looking at code.
 // I'm not exactly sure what 'false' does but it is a required bool.
-pros::ADIDigitalOut leftPiston('B',false);
-pros::ADIDigitalOut rightPiston('A',false);
+pros::ADIDigitalOut leftPiston('E',false);
+pros::ADIDigitalOut rightPiston('F',false);
 pros::ADIDigitalOut liftMech('H',false);
-pros::ADIDigitalOut blocker('F',false);
+pros::ADIDigitalOut blocker('A',false);
 
 // Initialize our sensors.
 // Our IMU (Inertial Measurement Unit) is used for our PIDs to turn accurately.
@@ -156,16 +156,19 @@ void wings() {
     }
 }
 
-// These two functions make it easier to open and close wings in an auton, where all I have to type is
-// autonWing() and autonWingStop().
-void autonWing(){
-    leftPiston.set_value(true);
+// These functions make it easier to open and close wings in an auton, where all I have to type is
+// raw, law, raws or laws.
+void raw(){
     rightPiston.set_value(true);
 }
-
-void autonWingStop(){
-    leftPiston.set_value(false);
+void law(){
+    leftPiston.set_value(true);
+}
+void raws(){
     rightPiston.set_value(false);
+}
+void laws(){
+    leftPiston.set_value(false);
 }
 
 // Declare a variable that is either true or false.
@@ -220,6 +223,13 @@ void cataSwitch(){
     }
 }
 
+// This wait function is for quality of life during autonomous.
+// Usually, you'll have to do pros::delay(msec);
+// But with wait, you can just do wait(msec);
+void wait(int msec){
+    pros::delay(msec);
+}
+
 // ---------------------------------------------------------- //
 //                          Autonomous
 // ---------------------------------------------------------- //
@@ -236,7 +246,7 @@ void cataSwitch(){
 // The far side scores the most points and houses the 6 ball autonomous.
 void autonomous() {
    // Close AWP
-   // This autonomous dislodges the matchload triball and touches the elevation bar.
+   // Th/is autonomous dislodges the matchload triball and touches the elevation bar.
    /*
    blocker.set_value(true);
    wait(500);
@@ -247,11 +257,13 @@ void autonomous() {
    wait(300);
    cataMotor2.move(0);
    cataMotor.move(0);
-   autonWing();
+   raw();
+   law();
    wait(100);
    chassis.turnTo(0,10000,750,false,100);
    wait(200);
-   autonWingStop();
+   raws();
+   laws();
    wait(100);
    chassis.moveTo(6,24,1000,100);
    wait(100);
@@ -259,9 +271,10 @@ void autonomous() {
    wait(300);
    chassis.setPose(0,0,0);
    wait(400);
-   chassis.turnTo(0,3000,750);
+   chassis.turnTo(0,2000,750);
    wait(100);
-   chassis.moveTo(0,10,1000,100);
+   chassis.moveTo(0,12,1000,100);
+   
 */
 /*
     // Close High AWP
@@ -273,9 +286,11 @@ void autonomous() {
     wait(100);
     blocker.set_value(false);
     // Dislodge Matchload Triball
-    autonWing();
+    raw();
+    law();
     chassis.turnTo(-59.033,-42.423,700);
-    autonWingStop();
+    raws();
+    laws();
     // Ram Alliance Triball into Goal
     chassis.moveTo(-59.033,-42.423,700,127);
     chassis.moveTo(-60.828,-22.895,700,127);
@@ -285,9 +300,11 @@ void autonomous() {
     chassis.moveTo(-35.24,-9.652,700,127);
     chassis.turnTo(-66.66,-9.652,700);
     // Push triballs
-    autonWing();
+    raw();
+    law();
     chassis.moveTo(-9.203,-9.652,1000,127);
-    autonWingStop();
+    raws();
+    laws();
     // Move to the bar
     chassis.moveTo(-43.32,-43.769,1200,127);
     chassis.moveTo(-35.913,-59.033,700,127);
@@ -300,13 +317,14 @@ void autonomous() {
 
 
     // Skills
-/*  // This skills autonomous attempts to shoot the cata over for 40 seconds.
+ // This skills autonomous attempts to shoot the cata over for 40 seconds.
     // Afterwards, it will go under the bar and score on 3 sides of the goal.
-    // INCOMPLETE
+    // INCOMPLETE  
+    
     chassis.setPose(0,0,145);
     cataMotor.move(127);
     cataMotor2.move(127);
-    wait(40000);
+    wait(35000);
     while(1){
         if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80){
         cataMotor.move(0);
@@ -315,11 +333,15 @@ void autonomous() {
         wait(200);
         chassis.moveTo(3,93,1500,127);
         wait(200);
-        autonWing();
+        raw();
+        law();
         wait(100);
+        chassis.turnTo(22,-66,1000);
         chassis.moveTo(-18,105,1000,127);
     wait(100);
-        autonWingStop(); 
+        chassis.moveTo(0,105,1000,127);
+        raws();
+        laws();
         chassis.moveTo(-35,110,1000,127);
         wait(100);
         chassis.setPose(0,0,0);
@@ -338,7 +360,8 @@ void autonomous() {
         wait(100);
         chassis.turnTo(50,5,1000);
         wait(100);
-        autonWing();
+        raw();
+        law();
         wait(100);
         chassis.setPose(0,0,0);
         chassis.moveTo(0,-50,1300,127);
@@ -351,7 +374,8 @@ void autonomous() {
         wait(100);
         chassis.moveTo(10,10,1000,127);
         wait(100);
-        autonWingStop();
+        raws();
+        laws();
         chassis.setPose(0,0,0);
         wait(100);
         wait(100);
@@ -363,7 +387,8 @@ void autonomous() {
         wait(100);
         chassis.setPose(0,0,0);
         wait(100);
-        autonWing();
+        raw();
+        law();
         wait(100);
         chassis.moveTo(40,-30,1000,127);
         wait(100);
@@ -378,61 +403,98 @@ void autonomous() {
         chassis.moveTo(0,10,1000,127);
         wait(100);
         chassis.moveTo(0,-15,1000,127);
-        autonWingStop();
+        raws();
+        laws();
         wait(100000);
     }
     else{
         cataMotor.move(127);
         cataMotor2.move(127);
     }
+    }
+    
 
-*/
+
 
 // Far 6 Ball 2
 // This is a rework of the previous autonomous.
+// Intake elevation triball
+/*
 chassis.setPose(10.223,-58.135,270);
 intakeMotor = 127;
 wait(500);
 intakeMotor = 0;
+// Dislodge matchload triball
 chassis.moveTo(36.138,-58.135,1000);
-autonWing();
+raw();
+law();
 chassis.moveTo(54.89,-52.238,650);
 chassis.turnTo(64.257,-55,750);
-autonWingStop();
-chassis.turnTo(76.257,-23.344,750);
+raws();
+laws();
+chassis.turnTo(73.257,-23.344,750);
+// Outtake triball
 intakeMotor = -127;
 wait(100);
 intakeMotor = 0;
+// Ramming process
 chassis.moveTo(45.789,-55.666,500);
-chassis.moveTo(76.299, -41.344,650);
+chassis.moveTo(76.299, -41.344,400);
 chassis.moveTo(70.94,-22.67,750);
 chassis.moveTo(48.299,-46.463,750);
 chassis.moveTo(35.303,-15.262,750);
 chassis.turnTo(9.467,-28.364,750);
+//
+// Intake mid triball 1
+chassis.turnTo(6.467, -8, 750);
 intakeMotor = 127;
-chassis.moveTo(9.467, -28.364, 750);
-intakeMotor = 0;
+chassis.moveTo(6.467, -8, 750);
 wait(300);
+// Outtake mid triball 1
 chassis.turnTo(42.361,0,750);
 intakeMotor = -127;
 wait(200);
 intakeMotor = 0;
-chassis.moveTo(20,-18.508,750);
-chassis.turnTo(5.447,-1.285,750);
-chassis.moveTo(20,-5,750);
-autonWing();
-wait(200);
-autonWingStop();
+// Position to intake mid triball 2
+chassis.moveTo(35,-18.508,750);
+chassis.turnTo(4,-3,500);
 intakeMotor = 127;
-chassis.moveTo(0,0,500);
+chassis.moveTo(15,-10,500);
+// Intake mid triball 2
+chassis.moveTo(7,1,500);
+wait(300);
 intakeMotor = 0;
-chassis.turnTo(46.912,-5.836,750);
-intakeMotor = -127;
+// Ram all triballs in(win vex)
+raw();
+law();
+chassis.moveTo(46.912,-1,750);
+
+*/
+/*
+intakeMotor = 127;
 wait(200);
 intakeMotor = 0;
-chassis.turnTo(-50.166,-5.836,750); 
-autonWing();
-chassis.moveTo(46.912,-5.836,750);
+blocker.set_value(true);
+wait(300);
+blocker.set_value(false);
+chassis.setPose(-52.984, -51.631, 0);
+raw();
+chassis.moveTo(-45.041, -58.666, 1000);
+chassis.turnTo(-14.5,-11.5,1000);
+raws();
+chassis.moveTo(-15.54, -15.776, 1000);
+chassis.turnTo( -40.276,-10.784,1000);
+chassis.moveTo(-40.949, -10.507, 1000);
+raw();
+law();
+chassis.moveTo(-3.286, -11.465, 1000);
+laws();
+raws();
+chassis.moveTo(-39.595, -38.469, 1000);
+chassis.moveTo(-37.326, -57.985, 1000);
+chassis.moveTo(-16.448, -58.666, 1000);
+chassis.moveTo(-6.69, -58.666, 1000);
+*/
 }
 
 // ---------------------------------------------------------- //
@@ -447,12 +509,7 @@ void disabled() {}
 // This is for if you have an autonomous picker.
 void competition_initialize() {}
 
-// This wait function is for quality of life during autonomous.
-// Usually, you'll have to do pros::delay(msec);
-// But with wait, you can just do wait(msec);
-void wait(int msec){
-    pros::delay(msec);
-}
+
 
 // Driver Control 
 void opcontrol() {
@@ -543,6 +600,10 @@ void opcontrol() {
         }
         if(master.get_digital_new_press(DIGITAL_DOWN)){
             cataSwitch();
+        }
+        if(master.get_digital(DIGITAL_Y)){
+            cataMotor.move(-127);
+            cataMotor2.move(-127);
         }
         // This if statement manages the hang mechanism. If the up button is pressed the hang mech immediately releases.
         if(master.get_digital(DIGITAL_UP)){
