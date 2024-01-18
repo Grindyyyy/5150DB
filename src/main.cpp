@@ -136,6 +136,7 @@ void initialize() {
 // Declare a variable that is either true or false.
 // This can help create toggles.
 bool wingToggle = false;
+bool cataUp = false;
 
 // This function is binded to a keypress. It checks the wingToggle boolean and sets it to the opposite value.
 // It then opens or closes the piston correspondant to the wingToggle boolean.
@@ -174,6 +175,7 @@ void laws(){
 // Declare a variable that is either true or false.
 // This can help create toggles.
 bool blockerToggle = false;
+bool switchToggle = false;
 
 // This function is binded to a keypress. It checks the blockerToggle boolean and sets it to the opposite value.
 // It then opens or closes the piston correspondant to the blockerToggle boolean.
@@ -186,6 +188,7 @@ void blockerFunc() {
     }
     if(blockerToggle == true){
         blocker.set_value(true);
+        cataUp = true;
     }
     else{
         blocker.set_value(false);
@@ -194,7 +197,7 @@ void blockerFunc() {
 
 // Declare a variable that is either true or false.
 // This can help create toggles.
-bool switchToggle = false;
+
 
 // This is a function for our catapult switch that turns a false to a true or vice versa.
 // Turning this toggle on turns off our linear switch, shown later in the code.
@@ -245,9 +248,9 @@ void wait(int msec){
 // through the close side.
 // The far side scores the most points and houses the 6 ball autonomous.
 void autonomous() {
+    /*
    // Close AWP
    // Th/is autonomous dislodges the matchload triball and touches the elevation bar.
-   /*
    blocker.set_value(true);
    wait(500);
    blocker.set_value(false);
@@ -274,8 +277,8 @@ void autonomous() {
    chassis.turnTo(0,2000,750);
    wait(100);
    chassis.moveTo(0,12,1000,100);
-   
-*/
+   */
+
 /*
     // Close High AWP
     // This autonomous scores the alliance triball, dislodges the triball, pushes 2 triballs across
@@ -320,7 +323,7 @@ void autonomous() {
  // This skills autonomous attempts to shoot the cata over for 40 seconds.
     // Afterwards, it will go under the bar and score on 3 sides of the goal.
     // INCOMPLETE  
-    
+    /*
     chassis.setPose(0,0,145);
     cataMotor.move(127);
     cataMotor2.move(127);
@@ -329,7 +332,7 @@ void autonomous() {
         if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80){
         cataMotor.move(0);
         cataMotor2.move(0);
-        chassis.moveTo(5,10,1500,127);
+        chassis.moveTo(5,8,1500,127);
         wait(200);
         chassis.moveTo(3,93,1500,127);
         wait(200);
@@ -381,18 +384,17 @@ void autonomous() {
         wait(100);
         chassis.moveTo(0,10,1000,127);
         wait(100);
-        chassis.turnTo(100,-15,1000);
+        raw();
+        law();
         wait(100);
         chassis.moveTo(50,-20,1500,127);
         wait(100);
         chassis.setPose(0,0,0);
         wait(100);
-        raw();
-        law();
-        wait(100);
         chassis.moveTo(40,-30,1000,127);
         wait(100);
         chassis.setPose(0,0,0);
+        chassis.turnTo(10,0,1000,127);
         wait(100);
         chassis.moveTo(0,10,1000,127);
         wait(100);
@@ -413,6 +415,7 @@ void autonomous() {
     }
     }
     
+    */
 
 
 
@@ -468,7 +471,6 @@ intakeMotor = 0;
 raw();
 law();
 chassis.moveTo(46.912,-1,750);
-
 */
 /*
 intakeMotor = 127;
@@ -495,7 +497,27 @@ chassis.moveTo(-37.326, -57.985, 1000);
 chassis.moveTo(-16.448, -58.666, 1000);
 chassis.moveTo(-6.69, -58.666, 1000);
 */
+
+chassis.setPose(-49.605, -54.506, 135);
+law();
+chassis.moveTo(-47.161, -59.539, 750);
+chassis.moveTo(-37.185,-63.933,750);
+laws();
+//ram
+chassis.moveTo(-53.234, -49.418, 750);
+chassis.moveTo(-62.022, -38.345, 500);
+chassis.moveTo(-62.771, -18.892, 500);
+//ram end
+chassis.moveTo(-48.745, -49.867, 1000);
+chassis.moveTo(-29.703,-30.414,750);
+chassis.moveTo(-25.879, -8.844, 1000);
+chassis.turnTo(-61.427,-8.811,750);
+chassis.moveTo(3.517, -10.968, 1000);
+chassis.moveTo(-9.82, -15.804, 750);
+chassis.moveTo(-45.872, -50.017, 1000);
+
 }
+
 
 // ---------------------------------------------------------- //
 //                          Driver
@@ -549,44 +571,49 @@ void opcontrol() {
         // If L2 is being held down, motor = max speed
         // If not, motor = half speed unless rotational sensor angle is between 66 and 68
         // If rot sensor is between values motor stops so its a linear switch.
-        // Find and print the cata angle
-        double angle = rot.get_angle();
-        std::printf("%f", angle);
-        if(switchToggle == false){
-            // If the angle is between 0 and 80, don't move the cata motors.
-            if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80 &&
-             !master.get_digital(DIGITAL_L2) && cataToggle != true){
-                cataMotor.move(0);
-                cataMotor2.move(0);  
-            }
-            // Else if L2 is held down, spin cata motors
-            else if(master.get_digital(DIGITAL_L2)){
-                cataMotor.move(127);
-                cataMotor2.move(127);
-            }
+        
+        // Blocker keybind toggle makes the cata go up when the blocker button is pressed
+        if(cataUp == true){
+            switchToggle = true;
+            cataMotor = -127;
+            wait(350);
+            cataUp = false; 
+                   }   
+        else if(switchToggle == false){
+                // If the angle is between 0 and 80, don't move the cata motors.
+                if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80 &&
+                !master.get_digital(DIGITAL_L2) && cataToggle != true){
+                    cataMotor.move(0);
+                    cataMotor2.move(0);  
+                }
+                // Else if L2 is held down, spin cata motors
+                else if(master.get_digital(DIGITAL_L2)){
+                    cataMotor.move(127);
+                    cataMotor2.move(127);
+                }
 
-            // We add this to our if statement so that it can check if the toggle is pressed and spin
-            // without being overrided by other things such as the linear switch being in range.
-            else if(cataToggle == true){
-                cataMotor.move(127);
-                cataMotor2.move(127);
-            }
+                // We add this to our if statement so that it can check if the toggle is pressed and spin
+                // without being overrided by other things such as the linear switch being in range.
+                else if(cataToggle == true){
+                    cataMotor.move(127);
+                    cataMotor2.move(127);
+                }
 
-            // Otherwise, spin the cata at 100 (not max so the value doesn't skip)
-            else{
-                cataMotor.move(100);
-                cataMotor2.move(100);
-            }
+                // Otherwise, spin the cata at 100 (not max so the value doesn't skip)
+                else{
+                    cataMotor.move(100);
+                    cataMotor2.move(100);
+                }
 
         }
         else if(master.get_digital(DIGITAL_L2)){
-                cataMotor.move(127);
-                cataMotor2.move(127);
-            }
+            cataMotor.move(127);
+            cataMotor2.move(127);
+        }
         else{
-                cataMotor.move(0);
-                cataMotor2.move(0);
-            }
+            cataMotor.move(0);
+            cataMotor2.move(0);
+        }
         // Toggle Managers
         // These check for new presses. When there is one it runs the toggle function.
         if(master.get_digital_new_press(DIGITAL_X)){
