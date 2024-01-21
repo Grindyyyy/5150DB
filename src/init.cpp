@@ -17,11 +17,11 @@ pros::Controller master(pros::E_CONTROLLER_MASTER);
 // We run 600RPM motors with a 36/84 gear ratio.
 // This makes our RPM 257. (600 * (36/84))
 pros::Motor leftFront(19, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor leftMiddle(2, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor leftBack(3, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor rightFront(4, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor rightMiddle(5, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor rightBack(6, pros::E_MOTOR_GEARSET_06, true);
+pros::Motor leftMiddle(17, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor leftBack(10, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor rightFront(18, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor rightMiddle(16, pros::E_MOTOR_GEARSET_06, true);
+pros::Motor rightBack(9, pros::E_MOTOR_GEARSET_06, true);
 
 // Initialize two motor groups, one for each side of the drivebase.
 // This makes it much simpler to do many things, but especially
