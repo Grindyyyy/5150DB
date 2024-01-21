@@ -16,16 +16,18 @@ pros::Controller master(pros::E_CONTROLLER_MASTER);
 // There are 2 motors on each side.
 // We run 600RPM motors with a 36/84 gear ratio.
 // This makes our RPM 257. (600 * (36/84))
-pros::Motor leftFront(1, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor leftBack(2, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor rightFront(7, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor rightBack(4, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor leftFront(19, pros::E_MOTOR_GEARSET_06, true);
+pros::Motor leftMiddle(2, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor leftBack(3, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor rightFront(4, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor rightMiddle(5, pros::E_MOTOR_GEARSET_06, true);
+pros::Motor rightBack(6, pros::E_MOTOR_GEARSET_06, true);
 
 // Initialize two motor groups, one for each side of the drivebase.
 // This makes it much simpler to do many things, but especially
 // drive code and autonomous.
-pros::Motor_Group leftDB({leftFront, leftBack});
-pros::Motor_Group rightDB({rightFront, rightBack});
+pros::Motor_Group leftDB({leftFront, leftMiddle, leftBack});
+pros::Motor_Group rightDB({rightFront, rightMiddle, rightBack});
 
 // Initialize 2 catapult motors.
 // One spins in reverse while one doesn't because they 
@@ -36,7 +38,7 @@ pros::Motor cataMotor2(9,pros::E_MOTOR_GEARSET_36,true);
 
 // Initialize an intake motor with 600RPM. 
 // The way that the motor is placed requires it to move in reverse.
-pros::Motor intakeMotor(6, pros::E_MOTOR_GEARSET_06, true);
+pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_06, false);
 
 // Initialize our pneumatics.
 // We use the digital out ports for VEX pneumatics, and they're lettered

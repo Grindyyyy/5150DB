@@ -38,7 +38,6 @@ void Autons::closeSide(){
     //ram
     chassis.moveTo(-58.471,-39.991,1000);
     chassis.turnTo(-58.234, -61.418, 750);
-    chassis.moveTo(-62,-24,750);
     laws();
     //ram end
     chassis.moveTo(-48.745, -49.867, 1000);
@@ -56,9 +55,7 @@ void Autons::closeSide(){
     // outtake triball
     intakeMotor = -127;
     wait(200);
-    intakeMotor = 0;
-    // touch bar
-    chassis.moveTo(-17.488,-57.948,3000);
+    intakeMotor = 0; 
 }
 void Autons::farSide(){
     // Far 6 Ball 2

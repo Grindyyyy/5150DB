@@ -4,8 +4,10 @@
 
 extern pros::Controller master;
 extern pros::Motor leftFront;
+extern pros::Motor leftMiddle;
 extern pros::Motor leftBack;
 extern pros::Motor rightFront;
+extern pros::Motor rightMiddle;
 extern pros::Motor rightBack;
 extern pros::Motor_Group leftDB;
 extern pros::Motor_Group rightDB;

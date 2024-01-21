@@ -23,7 +23,7 @@ void initialize() {
 
 void autonomous(){
     Autons myAutons;
-    myAutons.closeSide();
+    myAutons.awp();
 }
 
 // ---------------------------------------------------------- //
