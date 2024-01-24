@@ -11,19 +11,18 @@ extern pros::Motor rightMiddle;
 extern pros::Motor rightBack;
 extern pros::Motor_Group leftDB;
 extern pros::Motor_Group rightDB;
-extern pros::Motor cataMotor;
-extern pros::Motor cataMotor2;
+extern pros::Motor puncherMotor;
 extern pros::Motor intakeMotor;
-extern pros::ADIDigitalOut leftPiston;
-extern pros::ADIDigitalOut rightPiston;
-extern pros::ADIDigitalOut liftMech;
-extern pros::ADIDigitalOut blocker;
+extern pros::ADIDigitalOut frontWings;
+extern pros::ADIDigitalOut backWings;
+extern pros::ADIDigitalOut sideHang;
+extern pros::ADIDigitalOut vertHang;
 extern pros::Imu inertial_sensor;
 extern pros::Rotation rot;
-extern lemlib::Drivetrain_t drivetrain;
-extern lemlib::OdomSensors_t sensors;
-extern lemlib::ChassisController_t lateralController;
-extern lemlib::ChassisController_t angularController;
+extern lemlib::Drivetrain drivetrain;
+extern lemlib::OdomSensors sensors;
+extern lemlib::ControllerSettings lateralController;
+extern lemlib::ControllerSettings angularController;
 extern lemlib::Chassis chassis;
 
 

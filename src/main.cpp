@@ -80,44 +80,45 @@ void opcontrol() {
         // Blocker keybind toggle makes the cata go up when the blocker button is pressed
         if(cataUp == true){
             switchToggle = true;
-            cataMotor = -127;
+            puncherMotor = -127;
             wait(350);
             cataUp = false; 
                    }   
         else if(switchToggle == false){
                 // If the angle is between 0 and 80, don't move the cata motors.
-                if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80 &&
-                !master.get_digital(DIGITAL_L2) && cataToggle != true){
-                    cataMotor.move(0);
-                    cataMotor2.move(0);  
+                if(!master.get_digital(DIGITAL_L2) && cataToggle != true){
+                    puncherMotor = 0;
                 }
                 // Else if L2 is held down, spin cata motors
                 else if(master.get_digital(DIGITAL_L2)){
-                    cataMotor.move(127);
-                    cataMotor2.move(127);
+                    puncherMotor = 127;
+                }
+                else if(master.get_digital(DIGITAL_L1)){
+                    if(rot.get_angle() / 100 > 0 && rot.get_angle() / 100 < 80){
+                        puncherMotor = 0;
+                    }
+                    else{
+                        puncherMotor = 110;
+                    }
                 }
 
                 // We add this to our if statement so that it can check if the toggle is pressed and spin
                 // without being overrided by other things such as the linear switch being in range.
                 else if(cataToggle == true){
-                    cataMotor.move(127);
-                    cataMotor2.move(127);
+                    puncherMotor = 127;
                 }
 
                 // Otherwise, spin the cata at 100 (not max so the value doesn't skip)
                 else{
-                    cataMotor.move(100);
-                    cataMotor2.move(100);
+                    puncherMotor = 100;
                 }
 
         }
         else if(master.get_digital(DIGITAL_L2)){
-            cataMotor.move(127);
-            cataMotor2.move(127);
+            puncherMotor = 127;
         }
         else{
-            cataMotor.move(0);
-            cataMotor2.move(0);
+            puncherMotor = 0;
         }
         // Toggle Managers
         // These check for new presses. When there is one it runs the toggle function.
@@ -127,21 +128,20 @@ void opcontrol() {
         if(master.get_digital_new_press(DIGITAL_A)){
             killSwitch();
         }
-        if(master.get_digital_new_press(DIGITAL_B)){
-            blockerFunc();
-        }
-        if(master.get_digital_new_press(DIGITAL_DOWN)){
+        if(master.get_digital_new_press(DIGITAL_RIGHT)){
             cataSwitch();
         }
         if(master.get_digital(DIGITAL_Y)){
-            cataMotor.move(-127);
-            cataMotor2.move(-127);
+            puncherMotor = -127;
         }
         // This if statement manages the hang mechanism. If the up button is pressed the hang mech immediately releases.
-        if(master.get_digital(DIGITAL_UP)){
-            liftMech.set_value(true);
+        if(master.get_digital_new_press(DIGITAL_DOWN)){
+            sideHang.set_value(true);
             pros::delay(200);
-            liftMech.set_value(false);
+            sideHang.set_value(false);
+        }
+        if(master.get_digital_new_press(DIGITAL_UP)){
+
         }
 
         // ---------------------------------------------------------- //

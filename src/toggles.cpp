@@ -11,6 +11,7 @@
 // Declare a variable that is either true or false.
 // This can help create toggles.
 bool wingToggle = false;
+bool backWingToggle = false;
 bool cataUp = false;
 
 // This function is binded to a keypress. It checks the wingToggle boolean and sets it to the opposite value.
@@ -23,56 +24,30 @@ void wings() {
         wingToggle = true;
     }
     if(wingToggle == true){
-        leftPiston.set_value(true);
-        rightPiston.set_value(true);
+        frontWings.set_value(true);
     }
     else{
-        leftPiston.set_value(false);
-        rightPiston.set_value(false);
+        frontWings.set_value(false);
     }
 }
 
-// These functions make it easier to open and close wings in an auton, where all I have to type is
-// raw, law, raws or laws.
-void raw(){
-    rightPiston.set_value(true);
+void bWings(){
+    if(backWingToggle == true){
+        backWingToggle = false;
+    }
+    else{
+        backWingToggle = true;
+    }
+    if(backWingToggle == true){
+        backWings.set_value(true);
+    }
+    else{
+        backWings.set_value(false);
+    }
 }
-void law(){
-    leftPiston.set_value(true);
-}
-void raws(){
-    rightPiston.set_value(false);
-}
-void laws(){
-    leftPiston.set_value(false);
-}
-
 // Declare a variable that is either true or false.
 // This can help create toggles.
-bool blockerToggle = false;
 bool switchToggle = false;
-
-// This function is binded to a keypress. It checks the blockerToggle boolean and sets it to the opposite value.
-// It then opens or closes the piston correspondant to the blockerToggle boolean.
-void blockerFunc() {
-    if(blockerToggle == true){
-        blockerToggle = false;
-    }
-    else{
-        blockerToggle = true;
-    }
-    if(blockerToggle == true){
-        blocker.set_value(true);
-        cataUp = true;
-    }
-    else{
-        blocker.set_value(false);
-    }
-}
-
-// Declare a variable that is either true or false.
-// This can help create toggles.
-
 
 // This is a function for our catapult switch that turns a false to a true or vice versa.
 // Turning this toggle on turns off our linear switch, shown later in the code.

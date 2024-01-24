@@ -29,12 +29,9 @@ pros::Motor rightBack(9, pros::E_MOTOR_GEARSET_06, true);
 pros::Motor_Group leftDB({leftFront, leftMiddle, leftBack});
 pros::Motor_Group rightDB({rightFront, rightMiddle, rightBack});
 
-// Initialize 2 catapult motors.
-// One spins in reverse while one doesn't because they 
-// are on opposite sides.
-// We run red motor with a 12/36 ratio so that's 33.333 RPM.
-pros::Motor cataMotor(5, pros::E_MOTOR_GEARSET_36, false);
-pros::Motor cataMotor2(9,pros::E_MOTOR_GEARSET_36,true);
+// Initialize one puncher motors.
+// We run 100RPM motor with a 24/48 ratio so that's 50 RPM.
+pros::Motor puncherMotor(5, pros::E_MOTOR_GEARSET_36, false);
 
 // Initialize an intake motor with 600RPM. 
 // The way that the motor is placed requires it to move in reverse.
@@ -59,7 +56,7 @@ pros::Rotation rot(10);
 // We use the LemLib library for simpler PID creation and faster tuning, and this library
 // requires a drivebase class to be set. We establish necessary information such as the
 // track width and both sides of the drivebase.
-lemlib::Drivetrain_t drivetrain {
+lemlib::Drivetrain drivetrain {
     &leftDB, // Left MotorGroup
     &rightDB, // Right MotorGroup
     15, // track width
@@ -71,7 +68,7 @@ lemlib::Drivetrain_t drivetrain {
 // for autonomous using PID and sensors) using motor encoders. Typically, this is much
 // harder to code and most programmers strive for rotational sensors on the bottom of
 // a chassis, commonly called Odom Wheels.
-lemlib::OdomSensors_t sensors {
+lemlib::OdomSensors sensors {
     // We aren't using odometry wheels this year, so the lemlib sensors
     // need to be set to 'nullptr'.
     nullptr,
@@ -91,9 +88,11 @@ lemlib::OdomSensors_t sensors {
 // accepts a range to which it can stop, the timeout of which it can adjust or oscillate,
 // and the slew rate, which is the maximum rate that the code can accept a rapid change
 // in voltage or value.
-lemlib::ChassisController_t lateralController {
+lemlib::ControllerSettings lateralController {
     16,// kP
+    0, //kI
     100, // kD
+    0, //windupRange
     0, // smallErrorRange
     1000, // smallErrorTimeout
     0, // largeErrorRange
@@ -102,14 +101,16 @@ lemlib::ChassisController_t lateralController {
 };
  
 // turning PID
-lemlib::ChassisController_t angularController {
-    5, //kP
-    15.7, // kD
-    1, // small range
-    750, // small timeout
-    1, // large range
-    2000, // large timeout
-    25 // slew
+lemlib::ControllerSettings angularController {
+    16,// kP
+    0, //kI
+    100, // kD
+    0, //windupRange
+    0, // smallErrorRange
+    1000, // smallErrorTimeout
+    0, // largeErrorRange
+    1000, // largeErrorTimeout
+    25 // slew rate
 };
 
 
