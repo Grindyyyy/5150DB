@@ -13,6 +13,7 @@
 bool wingToggle = false;
 bool backWingToggle = false;
 bool cataUp = false;
+bool hangToggle = false;
 
 // This function is binded to a keypress. It checks the wingToggle boolean and sets it to the opposite value.
 // It then opens or closes the piston correspondant to the wingToggle boolean.
@@ -73,5 +74,20 @@ void cataSwitch(){
     }
     else{
         cataToggle = false;
+    }
+}
+
+void hang(){
+    if(hangToggle == true){
+        hangToggle = false;
+    }
+    else{
+        hangToggle = true;
+    }
+    if(hangToggle == true){
+        vertHang.set_value(true);
+    }
+    else{
+        vertHang.set_value(false);
     }
 }

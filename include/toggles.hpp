@@ -7,8 +7,10 @@ extern bool backWingToggle;
 extern bool cataUp;
 extern bool cataToggle;
 extern bool switchToggle;
+extern bool hangToggle;
 
 extern void wings();
 extern void bWings();
 extern void killSwitch();
 extern void cataSwitch();
+extern void hang();

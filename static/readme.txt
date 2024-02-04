@@ -8,4 +8,5 @@ Example of a path:
 78,90,12
 ..etc
 
-The text file will be named the auton in question but the comments will be in autonomous.cpp
+The text file will be named the auton in question but the comments will be in autonomous.
+//nigger

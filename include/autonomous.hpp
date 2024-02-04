@@ -10,6 +10,7 @@ class Autons{
         void test();
         void closeSide();
         void farSide();
+        void farSide2();
         void awp();
         void skills();
 };

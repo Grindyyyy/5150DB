@@ -4,7 +4,24 @@
 #include "toggles.hpp"
 #include "autonomous.hpp"
 
+void printscreen() {
+    while(1){
+        // This segment prints the x and y position of the bot as well as it's heading relative
+        // to the pose set.
+        lemlib::Pose pose = chassis.getPose(); // get the current position of the robot
+        pros::lcd::print(0, "x: %f", pose.x); // print the x pqosition
+        pros::lcd::print(1, "y: %f", pose.y); // print the y position
 
+        // This prints the angle recieved from the rotational sensor to the brain.
+        // This value updates every 20 milliseconds.
+        pros::lcd::print(2, "cata heading: %i", rot.get_angle() / 100); 
+
+        pros::lcd::print(3,"heading: %f", pose.theta);
+        pros::delay(20);
+    }
+
+
+}
 // ---------------------------------------------------------- //
 //                          Main
 // ---------------------------------------------------------- //
@@ -19,11 +36,12 @@ void initialize() {
     rot.set_reversed(true);
     chassis.calibrate(); // calibrates positioning of the chassis for accurate pid
     chassis.setPose(0,0,0); // x pos, y pos, angle/theta
+    pros::Task logger(printscreen);
 }
 
 void autonomous(){
     Autons myAutons;
-    myAutons.awp();
+    myAutons.skills();
 }
 
 // ---------------------------------------------------------- //
@@ -76,15 +94,7 @@ void opcontrol() {
         // If L2 is being held down, motor = max speed
         // If not, motor = half speed unless rotational sensor angle is between 66 and 68
         // If rot sensor is between values motor stops so its a linear switch.
-        
-        // Blocker keybind toggle makes the cata go up when the blocker button is pressed
-        if(cataUp == true){
-            switchToggle = true;
-            puncherMotor = -127;
-            wait(350);
-            cataUp = false; 
-                   }   
-        else if(switchToggle == false){
+        if(switchToggle == false){
                 // If the angle is between 0 and 80, don't move the cata motors.
                 if(!master.get_digital(DIGITAL_L2) && cataToggle != true){
                     puncherMotor = 0;
@@ -125,6 +135,9 @@ void opcontrol() {
         if(master.get_digital_new_press(DIGITAL_X)){
             wings();
         }
+        if(master.get_digital_new_press(DIGITAL_B)){
+            bWings();
+        }
         if(master.get_digital_new_press(DIGITAL_A)){
             killSwitch();
         }
@@ -141,25 +154,14 @@ void opcontrol() {
             sideHang.set_value(false);
         }
         if(master.get_digital_new_press(DIGITAL_UP)){
-
+            hang();
         }
 
         // ---------------------------------------------------------- //
         //                          Testing
         // ---------------------------------------------------------- //
 
-        // This segment prints the x and y position of the bot as well as it's heading relative
-        // to the pose set.
-        lemlib::Pose pose = chassis.getPose(); // get the current position of the robot
-        pros::lcd::print(0, "x: %f", pose.x); // print the x pqosition
-        pros::lcd::print(1, "y: %f", pose.y); // print the y position
-
-        // This prints the angle recieved from the rotational sensor to the brain.
-        // This value updates every 20 milliseconds.
-        pros::lcd::print(2, "cata heading: %i", rot.get_angle() / 100); 
-
-        pros::lcd::print(3,"heading: %f", pose.theta);
-
+       
         pros::delay(20);
     }
    

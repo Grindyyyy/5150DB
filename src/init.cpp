@@ -17,11 +17,12 @@ pros::Controller master(pros::E_CONTROLLER_MASTER);
 // We run 600RPM motors with a 36/84 gear ratio.
 // This makes our RPM 257. (600 * (36/84))
 pros::Motor leftFront(19, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor leftMiddle(17, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor leftBack(10, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor leftMiddle(2, pros::E_MOTOR_GEARSET_06, true);
+pros::Motor leftBack(3, pros::E_MOTOR_GEARSET_06, true);
 pros::Motor rightFront(18, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor rightMiddle(16, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor rightBack(9, pros::E_MOTOR_GEARSET_06, true);
+pros::Motor rightMiddle(11, pros::E_MOTOR_GEARSET_06, false);
+pros::Motor rightBack(15, pros::E_MOTOR_GEARSET_06, false);
+
 
 // Initialize two motor groups, one for each side of the drivebase.
 // This makes it much simpler to do many things, but especially
@@ -31,9 +32,9 @@ pros::Motor_Group rightDB({rightFront, rightMiddle, rightBack});
 
 // Initialize one puncher motors.
 // We run 100RPM motor with a 24/48 ratio so that's 50 RPM.
-pros::Motor puncherMotor(5, pros::E_MOTOR_GEARSET_36, false);
+pros::Motor puncherMotor(10, pros::E_MOTOR_GEARSET_36, true);
 
-// Initialize an intake motor with 600RPM. 
+// Initialize an intake motor with 600RPM.                
 // The way that the motor is placed requires it to move in reverse.
 pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_06, false);
 
@@ -41,17 +42,17 @@ pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_06, false);
 // We use the digital out ports for VEX pneumatics, and they're lettered
 // rather than numbered to prevent confusion when looking at code.
 // I'm not exactly sure what 'false' does but it is a required bool.
-pros::ADIDigitalOut leftPiston('E',false);
-pros::ADIDigitalOut rightPiston('F',false);
-pros::ADIDigitalOut liftMech('H',false);
-pros::ADIDigitalOut blocker('A',false);
+pros::ADIDigitalOut frontWings('H',false);
+pros::ADIDigitalOut backWings('D',false);
+pros::ADIDigitalOut sideHang('A',false);
+pros::ADIDigitalOut vertHang('B',false);
 
 // Initialize our sensors.
 // Our IMU (Inertial Measurement Unit) is used for our PIDs to turn accurately.
 // Our rotation sensor is placed on our cata with a ratchet to create a linear
 // switch, which will be covered later in the code.
 pros::Imu inertial_sensor(8);
-pros::Rotation rot(10);
+pros::Rotation rot(15);
 
 // We use the LemLib library for simpler PID creation and faster tuning, and this library
 // requires a drivebase class to be set. We establish necessary information such as the
@@ -59,9 +60,10 @@ pros::Rotation rot(10);
 lemlib::Drivetrain drivetrain {
     &leftDB, // Left MotorGroup
     &rightDB, // Right MotorGroup
-    15, // track width
-    4.00, // wheel diameter
-    257 // wheel rpm
+    13, // track width
+    3.25, // wheel diameter
+    360, // wheel rpm
+    2, //chase power
 };
  
 // LemLib is able to have VEX Odometry (a complex and extremely accurate coordinate system
@@ -89,27 +91,27 @@ lemlib::OdomSensors sensors {
 // and the slew rate, which is the maximum rate that the code can accept a rapid change
 // in voltage or value.
 lemlib::ControllerSettings lateralController {
-    16,// kP
+    8,// kP
     0, //kI
-    100, // kD
+    2, // kD
     0, //windupRange
-    0, // smallErrorRange
-    1000, // smallErrorTimeout
-    0, // largeErrorRange
-    1000, // largeErrorTimeout
+    1, // smallErrorRange
+    250, // smallErrorTimeout
+    2, // largeErrorRange
+    500, // largeErrorTimeout
     25 // slew rate
 };
  
 // turning PID
 lemlib::ControllerSettings angularController {
-    16,// kP
+    5,// kP
     0, //kI
-    100, // kD
+    20, // kD
     0, //windupRange
-    0, // smallErrorRange
-    1000, // smallErrorTimeout
-    0, // largeErrorRange
-    1000, // largeErrorTimeout
+    1, // smallErrorRange
+    250, // smallErrorTimeout
+    2, // largeErrorRange
+    500, // largeErrorTimeout
     25 // slew rate
 };
 
